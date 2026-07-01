@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #000;
+            color: #aaa;
+            overflow-x: hidden;
+        }
+
+        #splash {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        #splash.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        #splash-text {
+            font-size: 1.5rem;
+            letter-spacing: 0.3em;
+            animation: pulse 2s ease-in-out infinite;
+            color: #666;
+            font-weight: 300;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        #video-section {
+            position: relative;
+            width: 100%;
+            padding: 0;
+            margin: 0;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            background: #000;
+        }
+
+        .video-wrapper video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-wrapper::before,
+        .video-wrapper::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 100px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .video-wrapper::before {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .video-wrapper::after {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .video-container::before,
+        .video-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100px;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .video-container::before {
+            left: 0;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        .video-container::after {
+            right: 0;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.8), transparent);
+        }
+
+        #content {
+            padding: 3rem 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+            opacity: 0;
+            transition: opacity 1.5s ease;
+        }
+
+        #content.visible {
+            display: block;
+            animation: fadeIn 1.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #888;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            margin-top: 2.5rem;
+            color: #888;
+            font-weight: 300;
+            border-bottom: 1px solid #222;
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            margin-top: 1.5rem;
+            color: #777;
+            font-weight: 300;
+        }
+
+        h4 {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+            color: #666;
+            font-weight: 400;
+        }
+
+        p {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.4rem;
+            line-height: 1.6;
+            color: #aaa;
+        }
+
+        .info-grid {
+            display: block;
+            margin: 1.5rem 0;
+        }
+
+        .info-card {
+            background: transparent;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #111;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-card h4 {
+            margin-top: 0;
+            color: #777;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: transparent;
+            font-size: 0.9rem;
+            min-width: 1200px;
+        }
+
+        th, td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #111;
+            word-wrap: break-word;
+        }
+
+        th {
+            background: transparent;
+            color: #777;
+            font-weight: 400;
+        }
+
+        tr:nth-child(even) {
+            background: transparent;
+        }
+
+        td {
+            color: #aaa;
+        }
+
+        a {
+            color: #888;
+            text-decoration: none;
+            text-shadow: 0 0 8px rgba(136, 136, 136, 0.3);
+            transition: text-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        a:hover {
+            color: #aaa;
+            text-decoration: underline;
+            text-shadow: 0 0 12px rgba(170, 170, 170, 0.5);
+        }
+
+        h1, h2, h3, h4 {
+            text-shadow: 0 0 6px rgba(136, 136, 136, 0.2);
+        }
+
+        .info-card {
+            text-shadow: 0 0 4px rgba(136, 136, 136, 0.15);
+        }
+
+        strong {
+            color: #888;
+            font-weight: 400;
+        }
+
+        .credits {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #111;
+            text-align: center;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            #splash-text {
+                font-size: 1.2rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            #content {
+                padding: 2rem 1rem;
+            }
+
+            .video-container::before,
+            .video-container::after {
+                width: 50px;
+            }
+
+            .table-wrapper {
+                overflow-x: scroll;
+            }
+
+            table {
+                font-size: 0.8rem;
+                min-width: 1000px;
+            }
+
+            th, td {
+                padding: 0.5rem 0.25rem;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="splash">
+        <div id="splash-text">Click to enter..</div>
+    </div>
+
+    <div id="video-section">
+        <div class="video-container">
+            <div class="video-wrapper">
+                <video id="main-video" autoplay muted playsinline>
+                    <source src="becauseimbored.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        <div class="section">
+            <h1>Personal Information</h1>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>Name</h4>
+                    <p>Vladislav Levkovsky</p>
+                </div>
+                <div class="info-card">
+                    <h4>Address</h4>
+                    <p>Canada, Ontario, Toronto, 2200 Lakeshore blvd W, floor 15, apartment 10 #1510</p>
+                </div>
+                <div class="info-card">
+                    <h4>Age</h4>
+                    <p>19</p>
+                </div>
+                <div class="info-card">
+                    <h4>Date of Birth</h4>
+                    <p>November 21, 2006</p>
+                </div>
+                <div class="info-card">
+                    <h4>Gender</h4>
+                    <p>Male</p>
+                </div>
+                <div class="info-card">
+                    <h4>Phone Number</h4>
+                    <p>+1 4375569178</p>
+                    <p>Carrier: FIDO SOLUTIONS INC</p>
+                    <p>City: Toronto</p>
+                </div>
+            </div>
+
+            <h3>Background</h3>
+            <ul>
+                <li>Ukrainian origin; moved from Ukraine during the early 2010s</li>
+                <li>Started playing CS (Counter-Strike) and MC (Minecraft) during time in Chicago</li>
+                <li>Resided in Chicago, Illinois, USA, from 2018-11-25 to around 2022 (after 2019 for sure; was there in 2024 buying a phone)</li>
+                <li>Currently resides in Canada, Ontario (moved after Chicago period), Ukrainian descent</li>
+            </ul>
+
+            <h3>Parents</h3>
+            <ul>
+                <li><strong>Mother:</strong> Oksana Levkovskaya (oksana0312lev@gmail.com)</li>
+                <li><strong>Father:</strong> Sergey Levkovsky</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Aliases & Usernames</h2>
+            <div class="info-grid">
+                <div class="info-card">CEO</div>
+                <div class="info-card">nignogfucklong</div>
+                <div class="info-card">jamplays44</div>
+                <div class="info-card">jamplays3</div>
+                <div class="info-card">Я ПОВТОРЮ ТРЕТИЙ</div>
+                <div class="info-card">Hooker101LmaoGei</div>
+                <div class="info-card">FreeJoker67124</div>
+                <div class="info-card">_Fazy_</div>
+                <div class="info-card">GLEBonDOESin1</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Email Addresses</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>jamplays44@gmail.com</h4>
+                    <p>Associated with: EA / @Clientsided</p>
+                    <p><a href="https://chess.com/contourdifference" target="_blank">chess.com/contourdifference</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>misterwinner323@gmail.com</h4>
+                    <p>Associated with: Aimware</p>
+                    <p>Steam ID: STEAM_0:0:230754165</p>
+                    <p>Steam: <a href="https://steamcommunity.com/id/sfdfsadfdas/" target="_blank">steamcommunity.com/id/sfdfsadfdas/</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>vlevkov2006@gmail.com</h4>
+                    <p>Associated with: <a href="https://www.youtube.com/@nignogfucklong7301/" target="_blank">YouTube</a></p>
+                    <p>PayPal: <a href="https://paypal.me/jamplays" target="_blank">paypal.me/jamplays</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>oksana0312lev@gmail.com</h4>
+                    <p>Mother: Oksana Levkovskaya</p>
+                </div>
+                <div class="info-card">
+                    <h4>ceo@nuke.africa</h4>
+                </div>
+                <div class="info-card">
+                    <h4>slevkov@meta.ua</h4>
+                    <p>Username: LololowkaYT1</p>
+                    <p>NameMC: <a href="https://namemc.com/profile/EnderYTGaming.1" target="_blank">namemc.com/profile/EnderYTGaming.1</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>IP Addresses</h2>
+            <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP Address</th>
+                        <th>Provided Location</th>
+                        <th>Provided ASN/Org</th>
+                        <th>Provided Notes</th>
+                        <th>Latest Location</th>
+                        <th>Latest ASN/Org</th>
+                        <th>Latest Hostname</th>
+                        <th>Latest Notes/Abuse</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>207.181.194.128</td>
+                        <td>Naperville/Chicago, IL, USA</td>
+                        <td>RCN (ASN: 6079)</td>
+                        <td>N/A</td>
+                        <td>Chicago, IL, USA (41.85° N, 87.65° W; Postal: 60602; TZ: America/Chicago)</td>
+                        <td>AS6079 - RCN</td>
+                        <td>207-181-194-128.s894.c3-0.snb-ubr2.chi-snb.il.cable.rcncustomer.com</td>
+                        <td>ISP network; no abuse reports; contact: abuse@rcn.com (Princeton, NJ). Matches provided data.</td>
+                    </tr>
+                    <tr>
+                        <td>167.235.219.72</td>
+                        <td>Chicago, IL, USA</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>Falkenstein, Saxony, Germany (50.48° N, 12.37° E; Postal: 08520; TZ: Europe/Berlin)</td>
+                        <td>AS24940 - Hetzner Online GmbH</td>
+                        <td>static.72.219.235.167.clients.your-server.de</td>
+                        <td>Hosting provider (Hetzner data center); privacy-enabled; no hosted domains. Major discrepancy—likely a VPN/proxy exit node or misattributed; contact: abuse@hetzner.com (Gunzenhausen, Germany).</td>
+                    </tr>
+                    <tr>
+                        <td>165.84.231.101</td>
+                        <td>Toronto/London, ON, Canada / England, UK</td>
+                        <td>Netwise Hosting Ltd (ASN: 834)</td>
+                        <td>Data center/transit hosting</td>
+                        <td>London, England, UK (51.51° N, 0.13° W; Postal: E1W; TZ: Europe/London)</td>
+                        <td>AS834 - IPXO LLC (operated by Netwise Hosting Ltd)</td>
+                        <td>None</td>
+                        <td>Hosting/transit; no hosted domains; contact: abuse@netwise.co.uk (Bermondsey, London). Matches org/notes; geo refined to UK only (no Toronto link found).</td>
+                    </tr>
+                    <tr>
+                        <td>216.162.47.73</td>
+                        <td>Arlington, VA, USA</td>
+                        <td>U.S. Marshals Service (Forfeiture Order)</td>
+                        <td>Forum spam source detected</td>
+                        <td>Paris, Île-de-France, France (48.86° N, 2.35° E; Postal: 75004; TZ: Europe/Paris)</td>
+                        <td>N/A (seized; U.S. Marshals Service per Final Order of Forfeiture)</td>
+                        <td>None</td>
+                        <td>Seized by U.S. Marshals (Arlington, VA address: 1215 S Clark St.); prior use as proxy/spam source (e.g., forum spam, scams on StopForumSpam/ScamDigger). Geo may reflect reassignment; contact: anna.freeman@usdoj.gov. Confirms forfeiture and spam history.</td>
+                    </tr>
+                    <tr>
+                        <td>24.136.23.212</td>
+                        <td>Chicago, IL, USA</td>
+                        <td>AS6079 RCN (astound.com)</td>
+                        <td>Appears in Aimware logs</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                        <td>N/A</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Social Media & Accounts</h2>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h4>EA</h4>
+                    <p>@Clientsided</p>
+                </div>
+                <div class="info-card">
+                    <h4>PayPal</h4>
+                    <p><a href="https://paypal.me/jamplays" target="_blank">paypal.me/jamplays</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>NameMC</h4>
+                    <p><a href="https://namemc.com/profile/clientsided.3" target="_blank">clientsided.3</a> (ClientSided, jamplays3)</p>
+                    <p><a href="https://namemc.com/profile/EnderYTGaming.1" target="_blank">EnderYTGaming.1</a> (EnderYTGaming, EnderGaming01, EnderGamer01)</p>
+                </div>
+                <div class="info-card">
+                    <h4>YouTube</h4>
+                    <p><a href="https://www.youtube.com/@nignogfucklong7301/" target="_blank">@nignogfucklong7301</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>Steam</h4>
+                    <p><a href="https://steamcommunity.com/profiles/76561198850287347" target="_blank">Profile 1</a></p>
+                    <p><a href="https://steamcommunity.com/id/sfdfsadfdas/" target="_blank">sfdfsadfdas</a></p>
+                </div>
+                <div class="info-card">
+                    <h4>Discord</h4>
+                    <p>@raped</p>
+                    <p>@nignogfucklong#4348</p>
+                    <p>@JamPlays#4348</p>
+                </div>
+                <div class="info-card">
+                    <h4>Telegram</h4>
+                    <p><a href="https://t.me/rape" target="_blank">t.me/rape</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Google Account Data</h2>
+            
+            <h3>jamplays44@gmail.com</h3>
+            <ul>
+                <li><strong>Profile Picture:</strong> <a href="https://lh3.googleusercontent.com/a-/ALV-UjUrJCqJ7VAwtK8MLrnDfyoOp26LThACXhFkxrHmatzCzE-XUhs" target="_blank">View</a></li>
+                <li><strong>Last Edit:</strong> 2024/09/08 22:50:08 (UTC)</li>
+                <li><strong>Gaia ID:</strong> 112698373398222827083</li>
+                <li><strong>User Type:</strong> GOOGLE_USER</li>
+                <li><strong>Maps:</strong> <a href="https://www.google.com/maps/contrib/112698373398222827083/reviews" target="_blank">Profile</a> (1 review, 1 photo)</li>
+            </ul>
+
+            <h3>vlevkov2006@gmail.com</h3>
+            <ul>
+                <li><strong>Profile Picture:</strong> <a href="https://lh3.googleusercontent.com/a-/ALV-UjWw-4fe-5UlENsykOKVOzSwXyupuBVPhmELcX6iFblcbZNq8KcV" target="_blank">View</a></li>
+                <li><strong>Last Edit:</strong> 2025/10/18 14:43:18 (UTC)</li>
+                <li><strong>Gaia ID:</strong> 115982274002313677265</li>
+                <li><strong>User Type:</strong> GOOGLE_USER</li>
+                <li><strong>Play Games:</strong> FreeJoker67124 (Player ID: g00036151389393728197)</li>
+                <li><strong>Played Games:</strong> 9 games, 10 achievements</li>
+                <li><strong>Last Played:</strong> Kick the Buddy (2018-06-15)</li>
+                <li><strong>Most Achievements:</strong> Clash Royale (8)</li>
+            </ul>
+
+            <h3>misterwinner323@gmail.com</h3>
+            <ul>
+                <li><strong>Profile Picture:</strong> <a href="https://lh3.googleusercontent.com/a-/ALV-UjXjpZ2JFh2KOdAHWa20gB2ZScmqJk7YmziCKO9zABYyNcciYIM" target="_blank">View</a></li>
+                <li><strong>Last Edit:</strong> 2024/09/08 23:32:04 (UTC)</li>
+                <li><strong>Gaia ID:</strong> 104476205814490314578</li>
+                <li><strong>User Type:</strong> GOOGLE_USER</li>
+                <li><strong>Play Games:</strong> DisturbedBrain345516 (Player ID: g10178246950562249194)</li>
+                <li><strong>Played Games:</strong> 1 game, 0 achievements</li>
+                <li><strong>Last Played:</strong> Clash Royale (2018-04-25)</li>
+                <li><strong>Maps:</strong> <a href="https://www.google.com/maps/contrib/104476205814490314578/reviews" target="_blank">Profile</a></li>
+            </ul>
+
+            <h3>oksana0312lev@gmail.com</h3>
+            <ul>
+                <li><strong>Profile Picture:</strong> <a href="https://lh3.googleusercontent.com/a-/ALV-UjWgLBuMZa4IcfRIHAKo_SXMDavMDg0jXCtKoNKSXThvWLvylw" target="_blank">View</a></li>
+                <li><strong>Last Edit:</strong> 2025/09/30 00:35:28 (UTC)</li>
+                <li><strong>Gaia ID:</strong> 114374554008099592955</li>
+                <li><strong>User Type:</strong> GOOGLE_USER</li>
+                <li><strong>Maps:</strong> <a href="https://www.google.com/maps/contrib/114374554008099592955/reviews" target="_blank">Profile</a> (2 private reviews)</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Miscellaneous Information</h2>
+            
+            <h3>Aimware Logs</h3>
+            <ul>
+                <li>(5048866, 215620, '2018-11-25 15:22:01', '24.136.23.212', 1)</li>
+                <li>(6769335, 225751, '2019-02-27 22:15:37', '24.136.23.212', 1)</li>
+            </ul>
+
+            <h3>PC Logs</h3>
+            <ul>
+                <li><strong>Steam IDs:</strong> STEAM_0:0:230754165, STEAM_0:0:449020643, STEAM_0:1:449094945, STEAM_0:1:449104419, STEAM_0:1:449768866, STEAM_0:1:452156650, STEAM_0:1:454521625, STEAM_0:1:454534587, STEAM_0:0:456971147, STEAM_0:0:457362664, STEAM_0:0:457419435, STEAM_0:0:459540375, STEAM_0:1:459719653, STEAM_0:0:459973894</li>
+                <li><strong>OS:</strong> 17134.1.x86fre.rs4_release.180410-1804</li>
+                <li><strong>AppData Path:</strong> C:\Users\Vlad\AppData\Roaming\rUhYCOssAe\</li>
+                <li><strong>Download Path:</strong> C:\Users\Vlad\AppData\Local\Packages\Microsoft.MicrosoftEdge_8wekyb3d8bbwe\TempState\Downloads\PGRJp (1).exe</li>
+                <li><strong>Hardware:</strong> Intel Core i5-7400 CPU @ 3.00GHz, Intel HD Graphics 630, Alienware, 8GB RAM (SK Hynix)</li>
+                <li><strong>IP:</strong> 24.136.23.212 (repeated in logs)</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const splash = document.getElementById('splash');
+        const video = document.getElementById('main-video');
+
+        const content = document.getElementById('content');
+
+        splash.addEventListener('click', function() {
+            splash.classList.add('hidden');
+            if (video) {
+                video.muted = false;
+                video.play().catch(e => {});
+            }
+        });
+
+        if (video) {
+            video.addEventListener('ended', function() {
+                if (content) {
+                    content.classList.add('visible');
+                }
+            });
+
+            video.addEventListener('error', function() {
+                document.getElementById('video-section').style.display = 'none';
+                if (content) {
+                    content.classList.add('visible');
+                }
+            });
+        }
+
+        document.documentElement.style.scrollBehavior = 'smooth';
+    </script>
+</body>
+</html>
+
